@@ -1,0 +1,119 @@
+version: "3.8"
+
+networks: 
+  base-bridge:
+      driver: bridge
+
+services: 
+### PHP-FPM ######################################## 
+#######PHP7.1-FPM 
+    php7.1-fpm:
+        image: ${DOCKER_USER}/php-fpm:7.1
+        build:
+          context: ./php-fpm
+          args:
+            - X_PHP_VERSION=7.1
+            - INSTALL_XDEBUG=${PHP71_FPM_INSTALL_XDEBUG}
+            - INSTALL_SWOOLE=${PHP71_FPM_INSTALL_SWOOLE}
+            - SWOOLE_VERSION=${PHP71_FPM_SWOOLE_VERSION}
+            - INSTALL_WKHTMLTOPDF=${PHP71_FPM_INSTALL_WKHTMLTOPDF}
+            - INSTALL_ZSH=${PHP71_FPM_INSTALL_ZSH}
+        volumes:
+        - ./php-fpm/php7.1.ini:/usr/local/etc/php/php.ini
+        - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+        tty: true
+        expose:
+        - "9000"
+        networks:
+        - base-bridge  
+#######PHP7.3-FPM  
+    php7.3-fpm:
+        image: ${DOCKER_USER}/php-fpm:7.3
+        build:
+          context: ./php-fpm
+          args:
+            - X_PHP_VERSION=7.3
+            - INSTALL_XDEBUG=${PHP73_FPM_INSTALL_XDEBUG}
+            - INSTALL_SWOOLE=${PHP73_FPM_INSTALL_SWOOLE}
+            - SWOOLE_VERSION=${PHP73_FPM_SWOOLE_VERSION}
+            - INSTALL_XHPROF=${PHP73_FPM_INSTALL_XHPROF}
+            - INSTALL_WKHTMLTOPDF=${PHP73_FPM_INSTALL_WKHTMLTOPDF}
+            - INSTALL_ZSH=${PHP73_FPM_INSTALL_ZSH}
+        volumes:
+        - ./php-fpm/php7.3.ini:/usr/local/etc/php/php.ini
+        - ./php-fpm/php7.3-fpm.conf:/usr/local/etc/php-fpm.d/php7.3-fpm.conf
+        - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+        - ${PHP73_FPM_LOG_PATH}:/var/log/php7.3-fpm
+        tty: true
+        expose:
+        - "9000"
+        networks:
+        - base-bridge 
+        cap_add:
+        - SYS_PTRACE
+#######PHP7.4-FPM    
+    php7.4-fpm:
+        image: ${DOCKER_USER}/php-fpm:7.4
+        build:
+          context: ./php-fpm
+          args:
+            - X_PHP_VERSION=7.4
+            - INSTALL_XDEBUG=${PHP74_FPM_INSTALL_XDEBUG}
+            - INSTALL_SWOOLE=${PHP74_FPM_INSTALL_SWOOLE}
+            - SWOOLE_VERSION=${PHP74_FPM_SWOOLE_VERSION}
+            - INSTALL_WKHTMLTOPDF=${PHP74_FPM_INSTALL_WKHTMLTOPDF}
+            - INSTALL_ZSH=${PHP74_FPM_INSTALL_ZSH}
+        volumes:
+        - ./php-fpm/php7.4.ini:/usr/local/etc/php/php.ini
+        - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+        tty: true
+        expose:
+        - "9000"
+        networks:
+        - base-bridge
+
+### PHP-CLI ########################################  
+#######PHP7.1-CLI
+    php7.1-cli:
+        image: ${DOCKER_USER}/php-cli:7.1
+        build:
+          context: ./php-cli
+          args:
+            - X_PHP_VERSION=7.1
+            - INSTALL_XDEBUG=${PHP71_CLI_INSTALL_XDEBUG}
+            - INSTALL_SWOOLE=${PHP71_CLI_INSTALL_SWOOLE}
+            - SWOOLE_VERSION=${PHP71_CLI_SWOOLE_VERSION}
+            - INSTALL_WKHTMLTOPDF=${PHP71_CLI_INSTALL_WKHTMLTOPDF}
+            - INSTALL_ZSH=${PHP71_CLI_INSTALL_ZSH}
+        volumes:
+        - ./php-cli/php7.1.ini:/usr/local/etc/php/php.ini
+        - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+        tty: true
+        ports:
+        - "${cqgg_jobs_api_PORT}:${cqgg_jobs_api_CONTAINER_PORT}"
+        networks:
+        - base-bridge
+#######PHP7.4-CLI
+    php7.4-cli:
+        image: ${DOCKER_USER}/php-cli:7.4
+        build:
+          context: ./php-cli
+          args:
+            - X_PHP_VERSION=7.4
+            - INSTALL_XDEBUG=${PHP74_CLI_INSTALL_XDEBUG}
+            - INSTALL_SWOOLE=${PHP74_CLI_INSTALL_SWOOLE}
+            - SWOOLE_VERSION=${PHP74_CLI_SWOOLE_VERSION}
+            - INSTALL_WKHTMLTOPDF=${PHP74_CLI_INSTALL_WKHTMLTOPDF}
+            - INSTALL_ZSH=${PHP74_CLI_INSTALL_ZSH}
+        volumes:
+        - ./php-cli/php7.4.ini:/usr/local/etc/php/php.ini
+        - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+        tty: true
+        ports:
+        - "${hyperf_PORT}:${hyperf_CONTAINER_PORT}"
+        - "${b2c_to_shopify_PORT}:${b2c_to_shopify_CONTAINER_PORT}"
+        - "${industrious_api_PORT}:${industrious_api_CONTAINER_PORT}"
+        networks:
+        - base-bridge 
+        extra_hosts:
+          pd.local: ${HOSTIP}     
