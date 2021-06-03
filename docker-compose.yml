@@ -1,8 +1,9 @@
 version: "3.8"
 
 networks: 
-  base-bridge:
-      driver: bridge
+  default:
+    external:
+      name: docker_base-bridge  
 
 services: 
 ### PHP-FPM ######################################## 
@@ -24,8 +25,6 @@ services:
         tty: true
         expose:
         - "9000"
-        networks:
-        - base-bridge  
 #######PHP7.3-FPM  
     php7.3-fpm:
         image: ${DOCKER_USER}/php-fpm:7.3
@@ -47,8 +46,6 @@ services:
         tty: true
         expose:
         - "9000"
-        networks:
-        - base-bridge 
         cap_add:
         - SYS_PTRACE
 #######PHP7.4-FPM    
@@ -69,8 +66,6 @@ services:
         tty: true
         expose:
         - "9000"
-        networks:
-        - base-bridge
 
 ### PHP-CLI ########################################  
 #######PHP7.1-CLI
@@ -91,8 +86,6 @@ services:
         tty: true
         ports:
         - "${cqgg_jobs_api_PORT}:${cqgg_jobs_api_CONTAINER_PORT}"
-        networks:
-        - base-bridge
 #######PHP7.4-CLI
     php7.4-cli:
         image: ${DOCKER_USER}/php-cli:7.4
@@ -113,7 +106,5 @@ services:
         - "${hyperf_PORT}:${hyperf_CONTAINER_PORT}"
         - "${b2c_to_shopify_PORT}:${b2c_to_shopify_CONTAINER_PORT}"
         - "${industrious_api_PORT}:${industrious_api_CONTAINER_PORT}"
-        networks:
-        - base-bridge 
         extra_hosts:
           pd.local: ${HOSTIP}     
