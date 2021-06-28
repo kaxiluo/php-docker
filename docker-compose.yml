@@ -85,7 +85,8 @@ services:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
         tty: true
         ports:
-        - "${cqgg_jobs_api_PORT}:${cqgg_jobs_api_CONTAINER_PORT}"
+        - "${PHP71_CLI_TMP_PORT}:7777"
+        - "${cqgg_jobs_api_PORT}:${cqgg_jobs_api_CONTAINER_PORT}"   
 #######PHP7.4-CLI
     php7.4-cli:
         image: ${DOCKER_USER}/php-cli:7.4
@@ -103,6 +104,7 @@ services:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
         tty: true
         ports:
+        - "${PHP74_CLI_TMP_PORT}:7777"
         - "${hyperf_PORT}:${hyperf_CONTAINER_PORT}"
         - "${b2c_to_shopify_PORT}:${b2c_to_shopify_CONTAINER_PORT}"
         - "${industrious_api_PORT}:${industrious_api_CONTAINER_PORT}"
