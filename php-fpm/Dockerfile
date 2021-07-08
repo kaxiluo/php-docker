@@ -61,7 +61,7 @@ RUN if [ ${INSTALL_WKHTMLTOPDF} = true ]; then \
 RUN set -ex \
     && cd /tmp \
     # pdo_mysql mysqli ......
-    && docker-php-ext-install pdo_mysql mysqli exif zip sockets pcntl bcmath xsl gd \
+    && docker-php-ext-install pdo_mysql mysqli exif zip sockets pcntl bcmath xsl \
     # imap
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install imap \
@@ -87,6 +87,17 @@ RUN set -ex \
     && tar -zxvf mongodb-1.9.1.tgz \
     && mv mongodb-1.9.1 /usr/src/php/ext/mongodb \
     && docker-php-ext-install mongodb
+
+# GD
+ARG INSTALL_GD=true
+RUN if [ ${INSTALL_GD} = true ]; then \
+    if [ $(php -r "echo PHP_MAJOR_VERSION;") = "7" ] && [ $(php -r "echo PHP_MINOR_VERSION;") = "4" ]; then \
+      docker-php-ext-configure gd --with-freetype --with-jpeg --with-png; \
+    else \
+      docker-php-ext-configure gd --with-freetype-dir=/usr/lib/ --with-jpeg-dir=/usr/lib/ --with-png-dir=/usr/lib/; \
+    fi; \
+    docker-php-ext-install gd \
+;fi
 
 ## swoole
 ARG INSTALL_SWOOLE=false

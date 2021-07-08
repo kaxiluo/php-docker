@@ -23,6 +23,7 @@ services:
         - ./php-fpm/php7.1.ini:/usr/local/etc/php/php.ini
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
         tty: true
+        privileged: true
         expose:
         - "9000"
 #######PHP7.3-FPM  
@@ -46,6 +47,8 @@ services:
         tty: true
         expose:
         - "9000"
+        ports:
+        - "${PHP73_FPM_TMP_PORT}:7777"
         cap_add:
         - SYS_PTRACE
 #######PHP7.4-FPM    
@@ -110,3 +113,19 @@ services:
         - "${industrious_api_PORT}:${industrious_api_CONTAINER_PORT}"
         extra_hosts:
           pd.local: ${HOSTIP}     
+#######PHP7.4-CLI-swoole-4.6.4
+    php7.4-cli-swoole-4.6.4:
+      image: ${DOCKER_USER}/php-cli:7.4-swoole-4.6.4
+      build:
+        context: ./php-cli
+        args:
+          - X_PHP_VERSION=7.4
+          - INSTALL_XDEBUG=false
+          - INSTALL_SWOOLE=true
+          - SWOOLE_VERSION=4.6.4
+          - INSTALL_WKHTMLTOPDF=false
+          - INSTALL_ZSH=false
+      volumes:
+      - ./php-cli/php7.4.ini:/usr/local/etc/php/php.ini
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      tty: true
