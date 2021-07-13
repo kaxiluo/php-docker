@@ -22,6 +22,7 @@ services:
         volumes:
         - ./php-fpm/php7.1.ini:/usr/local/etc/php/php.ini
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+        - ./logs/php7.1-fpm/:/var/log/php7.1-fpm
         tty: true
         privileged: true
         expose:
