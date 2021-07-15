@@ -67,9 +67,14 @@ services:
         volumes:
         - ./php-fpm/php7.4.ini:/usr/local/etc/php/php.ini
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+        - ${PHP74_FPM_LOG_PATH}:/var/log/php7.4-fpm
         tty: true
         expose:
         - "9000"
+        ports:
+        - "${PHP74_FPM_TMP_PORT}:7777"
+        cap_add:
+        - SYS_PTRACE
 
 ### PHP-CLI ########################################  
 #######PHP7.1-CLI
