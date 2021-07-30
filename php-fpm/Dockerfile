@@ -99,6 +99,18 @@ RUN if [ ${INSTALL_GD} = true ]; then \
     docker-php-ext-install gd \
 ;fi
 
+# imagick
+ARG INSTALL_IMAGEMAGICK=false
+RUN if [ ${INSTALL_IMAGEMAGICK} = true ]; then \
+    #pecl install imagick; \
+    #docker-php-ext-enable imagick \
+    cd /tmp && \
+    apt-get install libmagickcore-dev libmagickwand-dev && \
+    tar -zxvf imagick-3.5.1.tgz && \
+    mv imagick-3.5.1 /usr/src/php/ext/imagick \
+    && docker-php-ext-install imagick \
+;fi
+
 ## swoole
 ARG INSTALL_SWOOLE=false
 ARG SWOOLE_VERSION=4.6.3
