@@ -3,19 +3,21 @@ FROM php:${X_PHP_VERSION}-fpm
 
 ARG X_PHP_VERSION
 
-RUN set -ex \
-    && cd /tmp \
+ARG CHANGE_SOURCE=false
+RUN if [ ${CHANGE_SOURCE} = true ]; then \
+    cd /tmp \
     && { \
 		echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib non-free"; \
 		echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main contrib non-free"; \
 		echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main contrib non-free"; \
 		echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main contrib non-free"; \
-	} > /etc/apt/sources.list ;
+	} > /etc/apt/sources.list \
     #&& sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list \
     #&& sed -i 's/security.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list \
     #&& sed -i 's/security-cdn.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
+;fi
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=PRC
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -24,9 +26,10 @@ RUN set -xe \
     && apt-get update -y \
     && pecl channel-update pecl.php.net \
     && apt-get install -y \
-      dialog whiptail \
-      apt-utils telnet net-tools procps iputils-ping \
-      vim git wget curl zsh
+      #dialog whiptail \
+      apt-utils  \
+      telnet net-tools procps iputils-ping \
+      vim curl git wget  zsh
 
 RUN set -eux \
     && apt-get install -y --no-install-recommends \
