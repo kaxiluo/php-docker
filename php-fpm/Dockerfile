@@ -3,7 +3,7 @@ FROM php:${X_PHP_VERSION}-fpm
 
 ARG X_PHP_VERSION
 
-ARG CHANGE_SOURCE=false
+ARG CHANGE_SOURCE=true
 RUN if [ ${CHANGE_SOURCE} = true ]; then \
     cd /tmp \
     && { \
