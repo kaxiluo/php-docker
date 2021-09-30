@@ -3,14 +3,40 @@ FROM php:${X_PHP_VERSION}-fpm
 
 ARG X_PHP_VERSION
 
-ARG CHANGE_SOURCE=true
+ARG CHANGE_SOURCE=false
 RUN if [ ${CHANGE_SOURCE} = true ]; then \
     cd /tmp \
     && { \
-		echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib non-free"; \
-		echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main contrib non-free"; \
-		echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main contrib non-free"; \
-		echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main contrib non-free"; \
+		# echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib non-free"; \
+		# echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main contrib non-free"; \
+		# echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main contrib non-free"; \
+		# echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main contrib non-free"; \
+        #
+        # echo "deb https://mirrors.huaweicloud.com/debian/ buster main contrib non-free"; \
+        # echo "deb https://mirrors.huaweicloud.com/debian/ buster-updates main contrib non-free"; \
+        # echo "deb https://mirrors.huaweicloud.com/debian/ buster-backports main contrib non-free"; \
+        # echo "deb https://mirrors.huaweicloud.com/debian-security/ buster/updates main contrib non-free"; \
+        # echo "deb-src https://mirrors.huaweicloud.com/debian/ buster main contrib non-free"; \
+        # echo "deb-src https://mirrors.huaweicloud.com/debian/ buster-updates main contrib non-free"; \
+        # echo "deb-src https://mirrors.huaweicloud.com/debian/ buster-backports main contrib non-free"; \
+        #
+        # echo "deb http://mirrors.163.com/debian/ buster main non-free contrib"; \
+        # echo "deb http://mirrors.163.com/debian/ buster-updates main non-free contrib"; \
+        # echo "deb http://mirrors.163.com/debian/ buster-backports main non-free contrib"; \
+        # echo "deb http://mirrors.163.com/debian-security/ buster/updates main non-free contrib"; \
+        # echo "deb-src http://mirrors.163.com/debian/ buster main non-free contrib"; \
+        # echo "deb-src http://mirrors.163.com/debian/ buster-updates main non-free contrib"; \
+        # echo "deb-src http://mirrors.163.com/debian/ buster-backports main non-free contrib"; \
+        # echo "deb-src http://mirrors.163.com/debian-security/ buster/updates main non-free contrib"; \
+        #
+        echo "deb http://mirrors.aliyun.com/debian/ buster main non-free contrib"; \
+        echo "deb-src http://mirrors.cloud.aliyuncs.com/debian/ buster main non-free contrib"; \
+        echo "deb http://mirrors.cloud.aliyuncs.com/debian-security buster/updates main"; \
+        echo "deb-src http://mirrors.cloud.aliyuncs.com/debian-security buster/updates main"; \
+        echo "deb http://mirrors.cloud.aliyuncs.com/debian/ buster-updates main non-free contrib"; \
+        echo "deb-src http://mirrors.cloud.aliyuncs.com/debian/ buster-updates main non-free contrib"; \
+        echo "deb http://mirrors.cloud.aliyuncs.com/debian/ buster-backports main non-free contrib"; \
+        echo "deb-src http://mirrors.cloud.aliyuncs.com/debian/ buster-backports main non-free contrib"; \
 	} > /etc/apt/sources.list \
     #&& sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list \
     #&& sed -i 's/security.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list \
@@ -25,13 +51,15 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN set -xe \
     && apt-get update -y \
     && pecl channel-update pecl.php.net \
-    && apt-get install -y \
+    #&& apt-get install -y aptitude \
+    && apt-get install -y --no-install-recommends \
       #dialog whiptail \
       apt-utils  \
       telnet net-tools procps iputils-ping \
-      vim curl git wget  zsh
+      vim git wget
 
 RUN set -eux \
+    &&  apt-get update -y \
     && apt-get install -y --no-install-recommends \
             autoconf libzip-dev zip unzip \
             libmemcached-dev libz-dev libpq-dev \
@@ -178,6 +206,7 @@ RUN if [ ${INSTALL_ZSH} = true ]; then \
     #&& sh install.sh \
     #&& rm install.sh \
     && cd /tmp \
+    && apt-get install -y zsh \
     && sh oh-my-zsh-install.sh \
     && rm oh-my-zsh-install.sh \
     && sed -i 's/^ZSH_THEME="robbyrussell"/ZSH_THEME="ys"/' ~/.zshrc \
